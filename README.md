@@ -15,16 +15,20 @@ Da der BelVis Importer keine flexiblen Filter- und Sortiermethoden realisiert, w
 # Voraussetzungen
 
 1. KiDSM
+
    Die Umsetzung wurde mit KiDSM 5.160.1 getestet.  Diese Version oder
    neuer sollte ausreichend sein.
 2. BelVis PFMGAS
+   
    Die Umsetzung wurde mit BelVis PFMGAS 3.21.160 getestet.  Diese
    Version oder neuer sollte ausreichend sein.
 3. Konverter-Dateien
+   
    Die Konverter Dateien sind in dem gleichen Zip zu finden, wie
    dieses Readme.  Wenn du diesen Text liest, hast du wahrscheinlich
    auch die Konverter Dateien.
 4. CCL (Optional für Neubau des Konverter-Binary)
+   
    CCL steht für Clozure Common Lisp.  Der Download ist unter
    http://ccl.clozure.com
    zu finden.  Getestet wurde mit CCL-1.10.
@@ -155,16 +159,4 @@ Datenaustauschnummer: VHP_IND
 
 Analog für _AE-Neg_/_AE\_NEG_ und _AE-Pos_/_AE\_POS_ vorgehen, um die beiden
 weiteren Importzeitreihen anzulegen.
-
-
-
-# ▀▄▀▄▀▄██▓▒░
-
-  ╭─────╮
-  
-  │ Fin │
-  
-  ╰─────╯
-
-Das war's auch schon.
 
