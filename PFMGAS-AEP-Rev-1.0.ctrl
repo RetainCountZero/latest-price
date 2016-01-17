@@ -1,0 +1,53 @@
+# -----------------------------------------------------------------
+# Rhenag AEP (aepreise_13.10.2015_18.10.2015.csv), zuvor konvertiert
+# Import Dateiname: aepreise_13.10.2015_18.10.2015_conv.csv
+#
+# Revision: 1.0
+# Changes:  ---
+# -----------------------------------------------------------------
+
+# -------------------------------------------------------------------
+# Allgemeines zu Zeitstempeln und Trennzeichen
+# -------------------------------------------------------------------
+!DATETIME.LOCAL_TIME                               = 0
+!DATETIME.DAYLIGHTSAVING.W-S.TIMESTAMP_0200_EXISTS = 0
+!DATETIME.AUTO_CORRECTION                          = 1
+
+# -------------------------------------------------------------------
+# Zeitreihen-Suchemethode(n)
+#   Es wird der Inhalt aus den Zellen A3 bis A5 für die
+#   Datenaustauschnummer verwendet.  In BelVis sind Zielzeitreihen
+#   für den Import im Tagesraster mit den Datenaustauschnummern
+#     VHP-IND
+#     AE_NEG
+#     AE_POS
+#  anzulegen.
+# -------------------------------------------------------------------
+!TS_SEARCH_DEF( SERIES_BY_EXCHANGEINFO )
+  INFO     = !CELL(1, $ACTCOL)
+  LOGLEVEL = ERROR
+/!TS_SEARCH_DEF
+
+# -------------------------------------------------------------------
+# Zeitstempel
+# -------------------------------------------------------------------
+TIMESTAMP.DATE        = !CELL( $ACTROW, 1 )
+TIMESTAMP.DATE.FORMAT = TT.MM.JJJJ
+# TIMESTAMP.TIME        = !CELL( $ACTROW, 2 )
+# TIMESTAMP.TIME.FORMAT = HH:mm:ss
+
+# -------------------------------------------------------------------
+# Wert und Einheit
+# -------------------------------------------------------------------
+VALUE      = !CELL( $ACTROW, $ACTCOL )
+VALUE.UNIT = "Euro/MWh"
+
+!IGNORE_EMPTY_VALUECELLS = 1
+!SEPARATOR = ";"
+!DECIMAL_SEPARATOR = ","
+!THOUSAND_SEPARATOR = "."
+
+# -------------------------------------------------------------------
+# Daten spaltenweise importieren ab Zeile 2
+# -------------------------------------------------------------------
+!READDATA( $ACTCOL, !COL(3), !COL(5), !COL(1), $ACTROW, !ROW(2), , !ROW(1), !DOWNWARD)
