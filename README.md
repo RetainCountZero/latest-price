@@ -2,19 +2,13 @@
 
 Anleitung zur Einrichtung des Konverters für Dateien vom Typ:
 
-aepreise_13.10.2015_18.10.2015.csv
+    aepreise_13.10.2015_18.10.2015.csv
 
-Diese Dateien enthalten Ausgleichenergiepreise.  In jeder Datei sind
-pro Gastag mehrfache Einträge vorhanden.  Zu jedem Zeitpunkt einer
-Preisfestlegung ist ein Preis für den Gastag vorhanden.
+Diese Dateien enthalten Ausgleichenergiepreise.  In jeder Datei sind pro Gastag mehrfache Einträge vorhanden.  Zu jedem Zeitpunkt einer Preisfestlegung ist ein Preis für den Gastag vorhanden.
 
-In BelVis soll jedoch nur der aktuellste Preis importiert werden.
-Alle zeitlich vorher liegenden Preisfeststellungen des Gastags werden
-nicht benötigt.
+In BelVis soll jedoch nur der aktuellste Preis importiert werden. Alle zeitlich vorher liegenden Preisfeststellungen des Gastags werden nicht benötigt.
 
-Da der BelVis Importer keine flexiblen Filter- und Sortiermethoden
-realisiert, wird diese Aufgabe in einem Pre-Processing Schritt durch
-den Konverter "LATEST-PRICE"/"LATEST-PRICE.exe" erledigt.
+Da der BelVis Importer keine flexiblen Filter- und Sortiermethoden realisiert, wird diese Aufgabe in einem Pre-Processing Schritt durch den Konverter _LATEST-PRICE_/_LATEST-PRICE.exe_ erledigt.
 
 
 
@@ -48,7 +42,7 @@ Die Datei latest-price.exe ist in einen Ordner zu kopieren, auf den
 KiDSM zugreifen kann.  Es bietet sich an, diese Datei außerhalb des
 KiDSM Ordners abzulegen, damit bei einem Update des KiDSM die Datei
 und deren Dateipfad unverändert bleibt.  Beispielhaft könnte die Datei
-in einem Ordner D:\KISTERS\Converter\ abgelegt werden.
+in einem Ordner _D:\KISTERS\Converter\_ abgelegt werden.
 
 
 ## Arbeitsordner
@@ -60,14 +54,17 @@ Die konvertierte Datei wird entweder in einen Ausgangsorder kopiert
 oder bei Fehlern in einen Junk Ordner.  Zusätzlich verschiebt KiDSM
 die Originaldatei in einen Ordner für Originaldateien.
 
-  \some-folder\AEP-In    <-- Eingangsordner
-  \some-folder\AEP-Out   <-- erfolgreich konvertierte Dateien
-  \some-folder\AEP-Junk  <-- nicht verarbeitbare Dateien
-  \some-folder\AEP-Orig  <-- Originaldateien
+    \some-folder\AEP-In    <-- Eingangsordner
+  
+    \some-folder\AEP-Out   <-- erfolgreich konvertierte Dateien
+
+    \some-folder\AEP-Junk  <-- nicht verarbeitbare Dateien
+  
+    \some-folder\AEP-Orig  <-- Originaldateien
 
 
 ## Steuerdatei für konfigurierbaren Import
-Die BelVis Steuerdatei PFMGAS-AEP-Rev-1.0.ctrl ist in den Ordner für
+Die BelVis Steuerdatei _PFMGAS-AEP-Rev-1.0.ctrl_ ist in den Ordner für
 BelVis3 Steuerdateien zu kopieren.
 
 
@@ -80,7 +77,7 @@ Konfiguration des KiDSM zeigen (KiDSM-Config-?-4.png).
 ## Datenquelle
 
 Es ist eine Datenquelle einzurichten, aus der die Originaldatei
-eingelesen wird.  Als Name des Datenorts wird AEP-In vorgeschlagen.
+eingelesen wird.  Als Name des Datenorts wird _AEP-In_ vorgeschlagen.
 Die Datenquelle muss als Pfad dann auf den Ordner zeigen, in den die
 zu konvertierende Datei abgelegt wird.
 
@@ -89,50 +86,50 @@ zu konvertierende Datei abgelegt wird.
 Weiterhin ist ein Datenort für die Originaldateien anzulegen.  Dieser
 Datenort ist ein Zielordner im KiDSM.  In diesen Ordner werden die
 Originaldateien (unkonvertiert) nach Bearbeitung verschoben.  Als Name
-des Datenorts bietet sich AEP-Orig an.  Der Pfad sollte auf der
-gleichen Ebene liegen, wie der Pfad des Datenortes AEP-In.  Bitte im
+des Datenorts bietet sich _AEP-Orig_ an.  Der Pfad sollte auf der
+gleichen Ebene liegen, wie der Pfad des Datenortes _AEP-In_.  Bitte im
 Zweifelsfalle die Screenshots zu Rate ziehen.
 
 # Konverter
 Es ist ein neuer Konverter anzulegen.  Dieser bekommt den Namen
-"AEP-Rhenag" und ist von Typ "Kommandozeilen-Konverter".
+_AEP-Rhenag_ und ist von Typ _Kommandozeilen-Konverter_.
 
-Im Konverter ist bei den "Speziellen Eigenschaften" Folgendes zu
+Im Konverter ist bei den _Speziellen Eigenschaften_ Folgendes zu
 verwenden:
 
-  Befehl:       d:/KISTERS/Converter/latest-price.exe
-  Ausführen in:
-  Parameter:    ${file}
-  Timeout:      600
+    Befehl:       d:/KISTERS/Converter/latest-price.exe
+    Ausführen in:
+    Parameter:    ${file}
+    Timeout:      600
 
 
 ## Job
 
-An Knoten "Datentransfer" ist schlussendlich ein neuer Job
+An Knoten _Datentransfer_ ist schlussendlich ein neuer Job
 einzurichten, der Datenquelle, Datenziel und Konverter zum Einsatz
 bringt. 
 
-Der Job erhält den Namen AEP-Rhenag.
+Der Job erhält den Namen _AEP-Rhenag_.
 
-Bei den Datenorten wird unter "Übertragen von" als Quelle der Datenort
-"AEP-In" referenziert und der Konverter "AEP-Rhenag" ausgewählt.
+Bei den Datenorten wird unter _Übertragen von_ als Quelle der Datenort
+_AEP-In_ referenziert und der Konverter _AEP-Rhenag_ ausgewählt.
 
-In der Auswahlbox "Übertragen nach" wird der Datenort "AEP-Orig"
+In der Auswahlbox _Übertragen nach_ wird der Datenort _AEP-Orig_
 eingetragen.
 
 Bei den Zusätzlichen Eigenschaften ist Folgendes zu verwenden:
 
-  Periodizität (Sekunden):                 60
-  Priorität:                               unverändert belassen
-  Max. Wiederholungen:                     2
-  Anzahl der Übertragungen/Job-Ausführung: 1000
+    Periodizität (Sekunden):                 60
+    Priorität:                               unverändert belassen
+    Max. Wiederholungen:                     2
+    Anzahl der Übertragungen/Job-Ausführung: 1000
 
 
 ## Übertragung in den Importordner
 
-Die konvertierte CSV-Datei wird im Ordner AEP-Out abgelegt.  Im
+Die konvertierte CSV-Datei wird im Ordner _AEP-Out_ abgelegt.  Im
 Regelfall ist das nicht der BelVis Importordner.  Daher ist ein
-zweiter Job im KiDSM anzulegen, welcher die Übertragung vom AEP-Out
+zweiter Job im KiDSM anzulegen, welcher die Übertragung vom _AEP-Out_
 Ordner in den spezifischen Importordner für den BelVis Mandanten
 vornimmt. 
 
@@ -140,12 +137,12 @@ vornimmt.
 
 # Konfiguration BelVis
 
-In BelVis ist die Steuerdatei "PFMGAS-AEP-Rev-1.0.ctrl" einzurichten.
+In BelVis ist die Steuerdatei _PFMGAS-AEP-Rev-1.0.ctrl_ einzurichten.
 Die Option Zeitreihen-Metadaten unterbinden sollte eingeschaltet
 werden.
 
-Die Zielzeitreihen können im PFMGAS an Stationen des Typs "Preis"
-angelegt werden oder im EDMGAS an jeweils einer allg. Station.
+Die Zielzeitreihen können im PFMGAS an Stationen des Typs _Preis_
+angelegt werden oder im EDMGAS an jeweils einer _allg. Station_.
 
 Zeitreihe anfügen ..
 - Tageswerte
@@ -156,7 +153,7 @@ Zeitreihe anfügen ..
 Entstehung: Import, 01.10.2015
 Datenaustauschnummer: VHP_IND
 
-Analog für AE-Neg/AE_NEG und AE-Pos/AE_POS vorgehen, um die beiden
+Analog für _AE-Neg_/_AE\_NEG_ und _AE-Pos_/_AE\_POS_ vorgehen, um die beiden
 weiteren Importzeitreihen anzulegen.
 
 
@@ -164,7 +161,9 @@ weiteren Importzeitreihen anzulegen.
 # ▀▄▀▄▀▄██▓▒░
 
   ╭─────╮
+  
   │ Fin │
+  
   ╰─────╯
 
 Das war's auch schon.
