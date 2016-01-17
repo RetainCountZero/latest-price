@@ -67,6 +67,7 @@ die Originaldatei in einen Ordner für Originaldateien.
     \some-folder\AEP-Orig  <-- Originaldateien
 
 
+
 ## Steuerdatei für konfigurierbaren Import
 Die BelVis Steuerdatei _PFMGAS-AEP-Rev-1.0.ctrl_ ist in den Ordner für
 BelVis3 Steuerdateien zu kopieren.
