@@ -11,13 +11,15 @@
 
 (defun main ()
   "The main function."
+  ;; First argument is process binary, second is input file
   (if (eq (length (uiop:raw-command-line-arguments)) 2)
       ;; Convert file
       (progn
         (let ((arg1 (second (uiop:raw-command-line-arguments))))
           (write-file (generate-output-filename (check-infile arg1))
                       (remove-old-prices (read-source-file (check-infile arg1))))
-          (move-to-done (generate-output-filename (check-infile arg1))))
+          (move-to-folder (generate-output-filename (check-infile arg1)) "AEP-Out"))
+          ;;; (move-to-done (generate-output-filename (check-infile arg1))))
         (uiop:quit 0))
 
       ;; Called with wrong number of argments
@@ -46,7 +48,8 @@
         (unless (equal "csv" (pathname-type (pathname infile)))
           (progn
             (format t "Input file has to be a .csv named file. Exiting.~%")
-            (move-to-junk-folder infile)
+            ;;; (move-to-junk-folder infile)
+            (move-to-folder infile "AEP-Junk")
             (uiop:quit 3)))
         (pathname infile))
       (progn
@@ -96,7 +99,6 @@
     (loop for line in content do
       (write-line (csv-out line) out))))
 
-
 ;;; Move a FILE to a FOLDER
 (defun move-to-folder (file folder)
   "Move a FILE (supplied as absolute pathname) to FOLDER"
@@ -108,24 +110,24 @@
     (rename-file oldfile (ensure-directories-exist newfile) :if-exists :overwrite)))
 
 ;;; Move a file to DONE folder
-(defun move-to-done (file &optional (done-folder "AEP-Out"))
-  "Move a file (supplied as absolute pathname) to DONE folder"
-  (let* ((oldfile (pathname file))
-         (newpath (append (butlast (pathname-directory (pathname file)))
-                          (list done-folder)))
-         (newfile (make-pathname :directory newpath
-                                 :defaults file)))
-    (rename-file oldfile (ensure-directories-exist newfile) :if-exists :overwrite)))
+;;; (defun move-to-done (file &optional (done-folder "AEP-Out"))
+;;;   "Move a file (supplied as absolute pathname) to DONE folder"
+;;;   (let* ((oldfile (pathname file))
+;;;          (newpath (append (butlast (pathname-directory (pathname file)))
+;;;                           (list done-folder)))
+;;;          (newfile (make-pathname :directory newpath
+;;;                                  :defaults file)))
+;;;     (rename-file oldfile (ensure-directories-exist newfile) :if-exists :overwrite)))
 
 ;;; Move a file to JUNK folder
-(defun move-to-junk (file &optional (junk-folder "AEP-Junk"))
-  "Move a file (supplied as absolute pathname) to JUNK folder"
-  (let* ((oldfile (pathname file))
-         (newpath (append (butlast (pathname-directory (pathname file)))
-                          (list junk-folder)))
-         (newfile (make-pathname :directory newpath
-                                 :defaults file)))
-    (rename-file oldfile (ensure-directories-exist newfile) :if-exists :overwrite)))
+;;; (defun move-to-junk (file &optional (junk-folder "AEP-Junk"))
+;;;   "Move a file (supplied as absolute pathname) to JUNK folder"
+;;;   (let* ((oldfile (pathname file))
+;;;          (newpath (append (butlast (pathname-directory (pathname file)))
+;;;                           (list junk-folder)))
+;;;          (newfile (make-pathname :directory newpath
+;;;                                  :defaults file)))
+;;;     (rename-file oldfile (ensure-directories-exist newfile) :if-exists :overwrite)))
 
 (defun trim-and-encode (input)
   "Takes a list of 11 values and returns a list comprised of
@@ -138,7 +140,7 @@ elements 1-3 and 10-11."
             (elt input 10))
       (progn
         (format t "File contains a line with != 11 columns. Exiting.~%")
-        (move-to-junk (check-infile (second (uiop:raw-command-line-arguments))))
+        (move-to-junk (check-infile (second (uiop:raw-command-line-arguments))) "AEP-Junk")
         (uiop:quit 5))))
 
 (defun encoded-date (string)
