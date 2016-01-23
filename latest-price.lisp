@@ -11,14 +11,14 @@
 
 (defun main ()
   "The main function."
-  (if (eq (length *command-line-argument-list*) 2)
+  (if (eq (length (uiop:raw-command-line-arguments)) 2)
       ;; Convert file
       (progn
-        (let ((arg1 (second *command-line-argument-list*)))
+        (let ((arg1 (second (uiop:raw-command-line-arguments))))
           (write-file (generate-output-filename (check-infile arg1))
                       (remove-old-prices (read-source-file (check-infile arg1))))
           (move-to-done (generate-output-filename (check-infile arg1))))
-        (ccl::quit))
+        (uiop:quit 0))
 
       ;; Called with wrong number of argments
       ;; Write some help and quit.
@@ -30,7 +30,7 @@
         (format t "_conv.~%~%")
         #+windows (format t "Example: LATEST-PRICE.exe d:\\tmp\\aepreise_13.10.2015_18.10.2015.csv~%~%")
         #-windows (format t "Example: LATEST-PRICE /tmp/aepreise_13.10.2015_18.10.2015.csv~%~%")
-        (ccl::quit))))
+        (uiop:quit 1))))
 
 
 ;;; Check for existence of source file.
@@ -42,16 +42,16 @@
           (progn
             (format t "Input file has to be supplied as absolute filename.~%")
             (format t "Example d:\\path-to-input\\filename.csv~%")
-            (ccl::quit)))
+            (uiop:quit 2)))
         (unless (equal "csv" (pathname-type (pathname infile)))
           (progn
             (format t "Input file has to be a .csv named file. Exiting.~%")
-            (move-to-junk infile)
-            (ccl::quit)))
+            (move-to-junk-folder infile)
+            (uiop:quit 3)))
         (pathname infile))
       (progn
         (format t "Input file does not exist. Exiting.~%")
-        (ccl::quit))))
+        (uiop:quit 4))))
 
 ;;; The converted file is saved under a new name.
 ;;; Source file: abc.csv -> converted file: abc_conv.csv
@@ -96,6 +96,17 @@
     (loop for line in content do
       (write-line (csv-out line) out))))
 
+
+;;; Move a FILE to a FOLDER
+(defun move-to-folder (file folder)
+  "Move a FILE (supplied as absolute pathname) to FOLDER"
+  (let* ((oldfile (pathname file))
+         (newpath (append (butlast (pathname-directory (pathname file)))
+                          (list folder)))
+         (newfile (make-pathname :directory newpath
+                                 :defaults file)))
+    (rename-file oldfile (ensure-directories-exist newfile) :if-exists :overwrite)))
+
 ;;; Move a file to DONE folder
 (defun move-to-done (file &optional (done-folder "AEP-Out"))
   "Move a file (supplied as absolute pathname) to DONE folder"
@@ -127,8 +138,8 @@ elements 1-3 and 10-11."
             (elt input 10))
       (progn
         (format t "File contains a line with != 11 columns. Exiting.~%")
-        (move-to-junk (check-infile (second *command-line-argument-list*)))
-        (ccl::quit))))
+        (move-to-junk (check-infile (second (uiop:raw-command-line-arguments))))
+        (uiop:quit 5))))
 
 (defun encoded-date (string)
   "Expects a string like 'DD.MM.YYYY'"
@@ -200,32 +211,4 @@ elements 1-3 and 10-11."
     (sort result #'> :key #'first)))
 
 
-;; Testing
-;; (defparameter *data2*
-;; (let ((result nil))
-;;   (mapcar #'(lambda (entry)
-;;               (if (gastag-exists entry result)
-;;                   (progn
-;;                     (format t "~%")
-;;                     (format t "secondary test required for ~a.~%" entry)
-;;                     (let ((idx (position (first entry) (get-gastage result))))
-;;                       (if (newer-entry-p entry (elt result idx))
-;;                           (progn
-;;                             (format t "~a is *NEWER* than ~a~%"
-;;                                     entry
-;;                                     (elt result idx))
-;;                             (format t "Result-list before remove ~a~%" result)
-;;                             (setf result (remove (elt result idx) result :test #'equal))
-;;                             (format t "Result-list after remove ~a~%" result)
-;;                             (push entry result)
-;;                             (format t "Result-list after push ~a~%"result))
-;;                           (progn
-;;                             (format t "~a is *OLDER* than ~a.~%"
-;;                                     entry
-;;                                     (elt result idx))))))
-;;                   (progn
-;;                     (push entry result)
-;;                     (format t "New Entry ~a added to result list~%" entry))))
-;;           *data1*)
-;;   (sort result #'> :key #'first))) ;; #'> => newest date first
 

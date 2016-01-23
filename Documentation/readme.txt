@@ -59,6 +59,13 @@ KiDSM Ordners abzulegen, damit bei einem Update des KiDSM die Datei
 und deren Dateipfad unverändert bleibt.  Beispielhaft könnte die Datei
 in einem Ordner D:\KISTERS\Converter\ abgelegt werden.
 
+Aufgrund eines Bugs in Clozure Common Lisp kann es vorkommen, dass
+der Lisp Prozess sich bei der Funktion (quit) nicht beendet.  Um
+dieses Problem zu vermeiden, ist für die Anwendung latest-price.exe
+bei den Kompatibilitätseinstellungen "Windows 7" auszuwählen.  Diese
+Einstellung ist für alle Anwender zu setzen, da der Konverter unter
+dem Benutzer des KiDSM als Subprozess aufgerufen wird.
+
 
 Arbeitsordner
 =============
@@ -186,3 +193,61 @@ weiteren Importzeitreihen anzulegen.
 
 Das war's auch schon.
 
+
+
+▀▄▀▄▀▄██▓▒░
+  ╭──────────────────╮
+  │ Additional hints │
+  ╰──────────────────╯
+
+## TESTING IN TERMINAL
+
+On Windows 8.0 and higher CCL seems to hang on the (quit) function.
+This is quite annoying when testing the application from the command
+line.  To avoid this bug, change the compatibility setting of the
+wx86cl64.exe or wx86cl.exe to "Windows 7" compatible.
+
+
+## Return codes
+
+Latest-Price returns an exit value.  The mapping of numerical value to
+a actual meaning is like this:
+
+0 - normal exit, no error
+1 - latest price was not called with one or two arguments
+2 - file was not supplied as an absolute pathname
+3 - file does not have the suffix csv
+4 - file does not exist
+5 - parsing of input file failed
+
+
+## QUICKLISP
+
+The usage of Quicklisp to handle libraries and dependencies is
+recommended.  Quick start guide:
+
+    https://www.quicklisp.org/beta/
+
+When starting from a fresh Lisp use:
+
+    (load #p"quicklisp.lisp")
+
+When switching Lisp implementations:
+
+    (load #p"quicklisp/setup.lisp")
+    (ql:add-to-init-file)
+
+Adding/Removing systems
+
+    (ql:quickload "system-name")
+    (ql:uninstall "system-name")
+
+Querying system
+
+    (ql:system-apropos "string")
+
+Updating QuickLisp:
+
+    (ql:update-all-dists)
+    (ql:update-client)
+    (ql-dist:clean (ql-dist:dist "quicklisp))
