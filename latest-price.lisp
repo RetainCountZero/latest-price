@@ -9,31 +9,58 @@
 
 (in-package #:latest-price)
 
+;;; ToDo: Clean up code after implementing ${proc_outputDir}
+;;; ToDo: Refactor CHECK-INFILExs
+
+;;; arg0: C:\Kisters\Konverter\latest-price.exe
+;;; arg1: C:\Kisters\BelVisData\KiDSM\AEP-In\aepreise_13.10.2015_18.10.2015.csv
+;;; arg2: C:\Kisters\KiDSM\kidsm\server\documents\processing\AEP-In\command.out
+
+
 (defun main ()
   "The main function."
-  ;; First argument is process binary, second is input file
-  (if (eq (length (uiop:raw-command-line-arguments)) 2)
+  ;; First argument is process binary,
+  ;; Second argument is input filename,
+  ;; Third argument is the output path.
+  (if (eq (length (uiop:raw-command-line-arguments)) 3)
       ;; Convert file
       (progn
-        (let ((arg1 (second (uiop:raw-command-line-arguments))))
-          (write-file (generate-output-filename (check-infile arg1))
-                      (remove-old-prices (read-source-file (check-infile arg1))))
-          (move-to-folder (generate-output-filename (check-infile arg1)) "AEP-Out"))
-          ;;; (move-to-done (generate-output-filename (check-infile arg1))))
+        (let ((arg1 (second (uiop:raw-command-line-arguments)))
+              (arg2 (third (uiop:raw-command-line-arguments))))
+          (write-file (kidsm-proc-pathname (pathname arg1)
+                                           (kidsm-proc-folder arg2))
+                      (remove-old-prices (read-source-file (check-infile arg1)))))
+          ;;; Move to AEP-Out is handled by KiDSM
         (uiop:quit 0))
 
       ;; Called with wrong number of argments
       ;; Write some help and quit.
       (progn
-        #+windows (format t "~%The LATEST-PRICE.exe application requires one argument.")
-        #-windows (format t "~%The LATEST-PRICE application requires one argument.~%")
-        (format t "The argument is the full path to the input file.~%")
+        #+os-windows (format t "~%The LATEST-PRICE.exe application requires one argument.")
+        #-os-windows (format t "~%The LATEST-PRICE application requires two arguments.~%")
+        (format t "The first argument is the full path to the input file.~%")
+        (format t "The second argument is the full path to the output folder.~%")
         (format t "The result filename is saved with the added suffix")
         (format t "_conv.~%~%")
-        #+windows (format t "Example: LATEST-PRICE.exe d:\\tmp\\aepreise_13.10.2015_18.10.2015.csv~%~%")
-        #-windows (format t "Example: LATEST-PRICE /tmp/aepreise_13.10.2015_18.10.2015.csv~%~%")
+        #+os-windows (format t "Example: LATEST-PRICE.exe d:\\tmp\\aepreise_20151013.csv d:\\tmp\out~%~%")
+        #-os-windows (format t "Example: LATEST-PRICE /tmp/aepreise_20151013.csv /tmp/out~%~%")
         (uiop:quit 1))))
 
+;;; KiDSM supplies the folder without a trailing backslash
+;;; This function always returns a folder PATHNAME.
+(defun kidsm-proc-folder (arg)
+  "Returns a PATHNAME from arg."
+  (truename arg))
+
+;;; KiDSM expects the converted file in this temporary location
+;;; KiDSM transfers the converted file later to the Datenziel
+(defun kidsm-proc-pathname (in-pathname out-pathname &optional (suffix "_conv"))
+  "Returns a PATHNAME based on name of IN-PATHNAME and directory of OUT-PATHNAME."
+  (let ((in-name (pathname-name in-pathname))
+        (in-type (pathname-type in-pathname)))
+    (make-pathname :name (concatenate 'string in-name suffix)
+                   :type in-type
+                   :defaults out-pathname)))
 
 ;;; Check for existence of source file.
 ;;; If file does not exist, quit application and do nothing.
@@ -48,23 +75,12 @@
         (unless (equal "csv" (pathname-type (pathname infile)))
           (progn
             (format t "Input file has to be a .csv named file. Exiting.~%")
-            ;;; (move-to-junk-folder infile)
             (move-to-folder infile "AEP-Junk")
             (uiop:quit 3)))
         (pathname infile))
       (progn
         (format t "Input file does not exist. Exiting.~%")
         (uiop:quit 4))))
-
-;;; The converted file is saved under a new name.
-;;; Source file: abc.csv -> converted file: abc_conv.csv
-(defun generate-output-filename (file &optional (suffix "_conv"))
-  "Adds the SUFFIX to a FILE."
-  (let ((filename (pathname-name (pathname file)))
-        (extension (pathname-type (pathname file))))
-    (make-pathname :name (concatenate 'string filename suffix)
-                   :type extension
-                   :defaults (pathname file))))
 
 ;;; Read the source file and return the list of strings as result
 ;;; The input file is expected to be a csv file.
@@ -109,26 +125,6 @@
                                  :defaults file)))
     (rename-file oldfile (ensure-directories-exist newfile) :if-exists :overwrite)))
 
-;;; Move a file to DONE folder
-;;; (defun move-to-done (file &optional (done-folder "AEP-Out"))
-;;;   "Move a file (supplied as absolute pathname) to DONE folder"
-;;;   (let* ((oldfile (pathname file))
-;;;          (newpath (append (butlast (pathname-directory (pathname file)))
-;;;                           (list done-folder)))
-;;;          (newfile (make-pathname :directory newpath
-;;;                                  :defaults file)))
-;;;     (rename-file oldfile (ensure-directories-exist newfile) :if-exists :overwrite)))
-
-;;; Move a file to JUNK folder
-;;; (defun move-to-junk (file &optional (junk-folder "AEP-Junk"))
-;;;   "Move a file (supplied as absolute pathname) to JUNK folder"
-;;;   (let* ((oldfile (pathname file))
-;;;          (newpath (append (butlast (pathname-directory (pathname file)))
-;;;                           (list junk-folder)))
-;;;          (newfile (make-pathname :directory newpath
-;;;                                  :defaults file)))
-;;;     (rename-file oldfile (ensure-directories-exist newfile) :if-exists :overwrite)))
-
 (defun trim-and-encode (input)
   "Takes a list of 11 values and returns a list comprised of
 elements 1-3 and 10-11."
@@ -140,7 +136,7 @@ elements 1-3 and 10-11."
             (elt input 10))
       (progn
         (format t "File contains a line with != 11 columns. Exiting.~%")
-        (move-to-junk (check-infile (second (uiop:raw-command-line-arguments))) "AEP-Junk")
+        (move-to-folder (check-infile (second (uiop:raw-command-line-arguments))) "AEP-Junk")
         (uiop:quit 5))))
 
 (defun encoded-date (string)

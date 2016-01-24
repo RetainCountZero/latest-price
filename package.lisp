@@ -1,6 +1,5 @@
 (defpackage :latest-price
-  (:use :common-lisp
-        :ccl)
+  (:use :common-lisp)
   (:nicknames :lp)
   (:export
    ;; latest-price.lisp

@@ -9,21 +9,21 @@
 
 ;;; Add the source folder to the *central-registry*
 ;;;
-#+windows (push #p"d:/tvossen/Common-Lisp/latest-price/"
+#+os-windows (push #p"d:/tvossen/Common-Lisp/latest-price/"
                 asdf:*central-registry*)
-#+windows (push #p"d:/tvossen/Common-Lisp/latest-price/Libraries/cl-csv/"
+#+os-windows (push #p"d:/tvossen/Common-Lisp/latest-price/Libraries/cl-csv/"
                 asdf:*central-registry*)
-#+windows (push #p"d:/tvossen/Common-Lisp/latest-price/Libraries/iterate/"
+#+os-windows (push #p"d:/tvossen/Common-Lisp/latest-price/Libraries/iterate/"
                 asdf:*central-registry*)
-#+windows (push #p"d:/tvossen/Common-Lisp/latest-price/Libraries/cl-interpol/"
+#+os-windows (push #p"d:/tvossen/Common-Lisp/latest-price/Libraries/cl-interpol/"
                 asdf:*central-registry*)
-#+windows (push #p"d:/tvossen/Common-Lisp/latest-price/Libraries/cl-unicode/"
+#+os-windows (push #p"d:/tvossen/Common-Lisp/latest-price/Libraries/cl-unicode/"
                 asdf:*central-registry*)
-#+windows (push #p"d:/tvossen/Common-Lisp/latest-price/Libraries/cl-ppcre/"
+#+os-windows (push #p"d:/tvossen/Common-Lisp/latest-price/Libraries/cl-ppcre/"
                 asdf:*central-registry*)
-#+windows (push #p"d:/tvossen/Common-Lisp/latest-price/Libraries/flexi-streams/"
+#+os-windows (push #p"d:/tvossen/Common-Lisp/latest-price/Libraries/flexi-streams/"
                 asdf:*central-registry*)
-#+windows (push #p"d:/tvossen/Common-Lisp/latest-price/Libraries/trivial-gray-streams/"
+#+os-windows (push #p"d:/tvossen/Common-Lisp/latest-price/Libraries/trivial-gray-streams/"
                 asdf:*central-registry*)
 
 #+darwin (push #p"/Users/tvossen/Common-Lisp/latest-price/"
