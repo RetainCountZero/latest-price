@@ -46,7 +46,8 @@ Es wird angenommen, das KiDSM erfolgreich installiert wurde.
 
 Die Datei latest-price.exe ist in einen Ordner zu kopieren, auf den KiDSM zugreifen kann.  Es bietet sich an, diese Datei außerhalb des KiDSM Ordners abzulegen, damit bei einem Update des KiDSM die Datei und deren Dateipfad unverändert bleibt.  Beispielhaft könnte die Datei in einem Ordner _D:\KISTERS\Converter\_ abgelegt werden.
 
-*ACHTUNG* Aufgrund eines Bugs in der Windows Version von CCL beendet sich der Konverter manchmal nicht.  Um diesen Bug zu vermeiden ist bei den Eigenschaften des Konverters latest-price.exe die Kompatilität für alle Anwender auf Windows 7 (Oder Server 2008) zu stellen.  Dadurch sollte sich der Konverter nach Abschluss der Konvertierung korrekt beenden.
+*ACHTUNG* 
+Aufgrund eines Bugs in der Windows Version von CCL beendet sich der Konverter manchmal nicht.  Um diesen Bug zu vermeiden ist bei den Eigenschaften des Konverters latest-price.exe die Kompatilität für alle Anwender auf Windows 7 (oder Server 2008) zu stellen.  Dadurch sollte sich der Konverter nach Abschluss der Konvertierung korrekt beenden.
 
 
 ## Arbeitsordner
